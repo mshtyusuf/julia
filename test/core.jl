@@ -1,6 +1,9 @@
 # This file is a part of Julia. License is MIT: https://julialang.org/license
 
 # test core language features
+
+using Random
+
 const Bottom = Union{}
 
 # For curmod_*
@@ -4141,7 +4144,7 @@ end
 
 # issue #14113
 module A14113
-    using Test
+    using Test, Random
     # show that making several thousand methods (and lots of AST constants)
     # doesn't cause any serious issues (for example, for the serializer)
     # although to keep runtime on the order of several seconds for this test,

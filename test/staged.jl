@@ -1,5 +1,7 @@
 # This file is a part of Julia. License is MIT: https://julialang.org/license
 
+using Random
+
 @generated function staged_t1(a,b)
     if a == Int
         return :(a+b)
@@ -138,7 +140,7 @@ end
 
 # @generated functions that throw (shouldn't segfault or throw)
 module TestGeneratedThrow
-    using Test
+    using Test, Random
 
     @generated function bar(x)
         error("I'm not happy with type $x")

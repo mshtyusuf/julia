@@ -1,5 +1,7 @@
 # This file is a part of Julia. License is MIT: https://julialang.org/license
 
+using Random
+
 # "is a null with type T", curried on 2nd argument
 isnull_oftype(x::Nullable, T::Type) = eltype(x) == T && isnull(x)
 isnull_oftype(T::Type) = x -> isnull_oftype(x, T)

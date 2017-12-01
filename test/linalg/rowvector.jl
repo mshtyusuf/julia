@@ -1,5 +1,7 @@
 # This file is a part of Julia. License is MIT: https://julialang.org/license
 
+using Random
+
 @testset "Core" begin
     v = [1,2,3]
     z = [1+im,2,3]

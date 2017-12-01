@@ -200,8 +200,6 @@ Base.SparseArrays.nnz
 Base.SparseArrays.spzeros
 Base.SparseArrays.spones
 Base.SparseArrays.spdiagm
-Base.SparseArrays.sprand
-Base.SparseArrays.sprandn
 Base.SparseArrays.nonzeros
 Base.SparseArrays.rowvals
 Base.SparseArrays.nzrange

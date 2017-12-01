@@ -354,12 +354,6 @@ include("irrationals.jl")
 include("mathconstants.jl")
 using .MathConstants: ℯ, π, pi
 
-# random number generation
-include("random/dSFMT.jl")
-include("random/random.jl")
-using .Random
-import .Random: rand, rand!
-
 # (s)printf macros
 include("printf.jl")
 using .Printf
@@ -414,6 +408,9 @@ include("libgit2/libgit2.jl")
 include("pkg/pkg.jl")
 
 # sparse matrices, vectors, and sparse linear algebra
+
+function _rand_pm1! end # defined in Random
+
 include("sparse/sparse.jl")
 using .SparseArrays
 
@@ -455,7 +452,14 @@ include("docs/Docs.jl")
 using .Docs, .Markdown
 isdefined(Core, :Inference) && Docs.loaddocs(Core.Inference.CoreDocs.DOCS)
 
+# RAND_MAX at least 2^15-1 in theory, but we assume 2^16-1 (in practice, it's 2^31-1)
+Crand() = ccall(:rand, Cuint, ())
+Crand(::Type{UInt32}) = ((Crand() % UInt32) << 16) ⊻ (Crand() % UInt32)
+Crand(::Type{Float64}) = Crand(UInt32) / 2^32
+
 function __init__()
+    # for the few uses of Crand in Base:
+    ccall(:srand, Void, (Cuint,), floor(time()))
     # Base library init
     reinit_stdio()
     global_logger(SimpleLogger(STDERR))
@@ -479,16 +483,17 @@ Base.require(:Base64)
 Base.require(:CRC32c)
 Base.require(:Dates)
 Base.require(:DelimitedFiles)
+Base.require(:Distributed)
 Base.require(:FileWatching)
 Base.require(:IterativeEigenSolvers)
 Base.require(:Logging)
 Base.require(:Mmap)
 Base.require(:Profile)
+Base.require(:Random)
 Base.require(:SharedArrays)
 Base.require(:SuiteSparse)
 Base.require(:Test)
 Base.require(:Unicode)
-Base.require(:Distributed)
 
 @eval Base begin
     @deprecate_binding Test root_module(:Test) true ", run `using Test` instead"
@@ -496,6 +501,7 @@ Base.require(:Distributed)
     @deprecate_binding Profile root_module(:Profile) true ", run `using Profile` instead"
     @deprecate_binding Dates root_module(:Dates) true ", run `using Dates` instead"
 #    @deprecate_binding Distributed root_module(:Distributed) true ", run `using Distributed` instead"
+    @deprecate_binding Random root_module(:Random) true ", run `using Random` instead"
 end
 
 empty!(LOAD_PATH)

@@ -1,6 +1,6 @@
 # This file is a part of Julia. License is MIT: https://julialang.org/license
 
-using Test, Distributed
+using Test, Distributed, Random
 
 import Base: root_module
 
@@ -220,7 +220,7 @@ try
                                Dict(s => Base.module_uuid(Base.root_module(s)) for s in
                                     [:Base64, :CRC32c, :Dates, :DelimitedFiles, :FileWatching,
                                      :IterativeEigenSolvers, :Logging, :Mmap, :Profile, :SharedArrays,
-                                     :SuiteSparse, :Test, :Unicode, :Distributed]))
+                                     :SuiteSparse, :Test, :Unicode, :Distributed, :Random]))
         @test discard_module.(deps) == deps1
 
         @test current_task()(0x01, 0x4000, 0x30031234) == 2

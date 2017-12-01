@@ -1,6 +1,6 @@
 # This file is a part of Julia. License is MIT: https://julialang.org/license
 
-using Test, Distributed
+using Test, Distributed, Random
 
 import Logging: Debug, Info, Warn
 
@@ -616,7 +616,7 @@ end
 
 @testset "test guarded srand" begin
     seed = rand(UInt)
-    orig = copy(Base.GLOBAL_RNG)
+    orig = copy(defaultRNG())
     @test guardsrand(()->rand(), seed) == guardsrand(()->rand(), seed)
     @test guardsrand(()->rand(Int), seed) == guardsrand(()->rand(Int), seed)
     r1, r2 = MersenneTwister(0), MersenneTwister(0)
