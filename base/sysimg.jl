@@ -146,6 +146,21 @@ Matrix(::Uninitialized, m::Integer, n::Integer) = Matrix{Any}(uninitialized, Int
 # empty vector constructor
 Vector() = Vector{Any}(uninitialized, 0)
 
+# Array constructors for nothing and missing
+for U in (Void, Missing)
+    @eval begin
+        # type and dimensionality specified
+        Array{T,N}(::$U, d::Vararg{Integer,N}) where {T,N} =
+            fill!(Array{T,N}(uninitialized, convert(Tuple{Vararg{Int}}, d)...), $U())
+        Array{T,N}(::$U, d::NTuple{N,Integer}) where {T,N} =
+            fill!(Array{T,N}(uninitialized, convert(Tuple{Vararg{Int}}, d)...), $U())
+        # type but not dimensionality specified
+        Array{T}(::$U, d::Vararg{Integer,N}) where {T,N} =
+            fill!(Array{T,N}(uninitialized, convert(Tuple{Vararg{Int}}, d)...), $U())
+        Array{T}(::$U, d::NTuple{N,Integer}) where {T,N} =
+            fill!(Array{T,N}(uninitialized, convert(Tuple{Vararg{Int}}, d)...), $U())
+    end
+end
 
 include("abstractdict.jl")
 
