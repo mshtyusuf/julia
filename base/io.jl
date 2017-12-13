@@ -734,6 +734,18 @@ end
 
 Read the entirety of `x` as a string and remove a single trailing newline.
 Equivalent to `chomp!(read(x, String))`.
+
+# Examples
+```jldoctest
+julia> open("my_file.txt", "w") do io
+           write(io, "JuliaLang is a GitHub organization.\\nIt has many members.\\n");
+       end;
+
+julia> readchomp("my_file.txt")
+"JuliaLang is a GitHub organization.\\nIt has many members."
+
+julia> rm("my_file.txt");
+```
 """
 readchomp(x) = chomp!(read(x, String))
 
@@ -792,15 +804,29 @@ mutable struct EachLine
 end
 
 """
-    eachline(stream::IO=STDIN; chomp::Bool=true)
+    eachline(io::IO=STDIN; chomp::Bool=true)
     eachline(filename::AbstractString; chomp::Bool=true)
 
 Create an iterable `EachLine` object that will yield each line from an I/O stream
-or a file. Iteration calls `readline` on the stream argument repeatedly with
+or a file. Iteration calls [`readline`](@ref) on the stream argument repeatedly with
 `chomp` passed through, determining whether trailing end-of-line characters are
 removed. When called with a file name, the file is opened once at the beginning of
 iteration and closed at the end. If iteration is interrupted, the file will be
 closed when the `EachLine` object is garbage collected.
+
+# Examples
+```jldoctest
+julia> open("my_file.txt", "w") do io
+           write(io, "JuliaLang is a GitHub organization.\\n It has many members.\\n");
+       end;
+
+julia> for line in eachline("my_file.txt")
+           print(line)
+       end
+JuliaLang is a GitHub organization. It has many members.
+
+julia> rm("my_file.txt");
+```
 """
 eachline(stream::IO=STDIN; chomp::Bool=true) = EachLine(stream, chomp=chomp)::EachLine
 
@@ -897,6 +923,8 @@ characters from that character until the start of the next line are ignored.
 julia> buf = IOBuffer("    text")
 IOBuffer(data=UInt8[...], readable=true, writable=false, seekable=true, append=false, size=8, maxsize=Inf, ptr=1, mark=-1)
 
+julia> using Unicode
+
 julia> skipchars(buf, isspace)
 IOBuffer(data=UInt8[...], readable=true, writable=false, seekable=true, append=false, size=8, maxsize=Inf, ptr=5, mark=-1)
 
@@ -941,7 +969,7 @@ julia> countlines(io, '.')
 ```
 """
 function countlines(io::IO, eol::Char='\n')
-    isascii(eol) || throw(ArgumentError("only ASCII line terminators are supported"))
+    Unicode.isascii(eol) || throw(ArgumentError("only ASCII line terminators are supported"))
     aeol = UInt8(eol)
     a = Vector{UInt8}(uninitialized, 8192)
     nl = 0
