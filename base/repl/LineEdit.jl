@@ -106,9 +106,9 @@ region(s) = Pair(extrema(_region(s))...)
 
 bufend(s) = buffer(s).size
 
-indexes(reg::Region) = first(reg)+1:last(reg)
+indices(reg::Region) = first(reg)+1:last(reg)
 
-content(s, reg::Region = 0=>bufend(s)) = String(buffer(s).data[indexes(reg)])
+content(s, reg::Region = 0=>bufend(s)) = String(buffer(s).data[indices(reg)])
 
 function activate_region(s::PromptState, state::Symbol)
     @assert state in (:mark, :shift, :off)

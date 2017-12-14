@@ -45,7 +45,7 @@ count(f, x::SparseVector) = count(f, x.nzval) + f(zero(eltype(x)))*(length(x) - 
 
 nonzeros(x::SparseVector) = x.nzval
 function nonzeros(x::SparseColumnView)
-    rowidx, colidx = parentindexes(x)
+    rowidx, colidx = parentindices(x)
     A = parent(x)
     @inbounds y = view(A.nzval, nzrange(A, colidx))
     return y
@@ -53,7 +53,7 @@ end
 
 nonzeroinds(x::SparseVector) = x.nzind
 function nonzeroinds(x::SparseColumnView)
-    rowidx, colidx = parentindexes(x)
+    rowidx, colidx = parentindices(x)
     A = parent(x)
     @inbounds y = view(A.rowval, nzrange(A, colidx))
     return y
@@ -106,7 +106,7 @@ spones(x::SparseVector{T}) where {T} = SparseVector(x.n, copy(x.nzind), ones(T, 
 ### Construction from lists of indices and values
 
 function _sparsevector!(I::Vector{<:Integer}, V::Vector, len::Integer)
-    # pre-condition: no duplicate indexes in I
+    # pre-condition: no duplicate indices in I
     if !isempty(I)
         p = sortperm(I)
         permute!(I, p)

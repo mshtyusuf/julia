@@ -215,7 +215,7 @@ function convert(::Type{UpperTriangular}, A::Bidiagonal)
 end
 
 # Deprecate three-arg SubArray since the constructor doesn't need the dims tuple
-@deprecate SubArray(parent::AbstractArray, indexes::Tuple, dims::Tuple) SubArray(parent, indexes)
+@deprecate SubArray(parent::AbstractArray, indices::Tuple, dims::Tuple) SubArray(parent, indices)
 
 # Deprecate vectorized unary functions over sparse matrices in favor of compact broadcast syntax (#17265).
 for f in (:sind, :asind, :tand, :atand, :sinpi, :cosc, :ceil, :floor, :trunc,
@@ -3036,6 +3036,9 @@ end
 # issue #25016
 @deprecate lpad(s, n::Integer, p) lpad(string(s), n, string(p))
 @deprecate rpad(s, n::Integer, p) rpad(string(s), n, string(p))
+
+# Issue #12902
+@deprecate parentindexes parentindices
 
 # END 0.7 deprecations
 

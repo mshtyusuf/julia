@@ -1696,7 +1696,7 @@ because of a definition similar to
     function Base.showarg(io::IO, v::SubArray, toplevel)
         print(io, "view(")
         showarg(io, parent(v), false)
-        print(io, ", ", join(v.indexes, ", "))
+        print(io, ", ", join(v.indices, ", "))
         print(io, ')')
         toplevel && print(io, " with eltype ", eltype(v))
     end
@@ -1724,7 +1724,7 @@ end
 function showarg(io::IO, v::SubArray, toplevel)
     print(io, "view(")
     showarg(io, parent(v), false)
-    showindices(io, v.indexes...)
+    showindices(io, v.indices...)
     print(io, ')')
     toplevel && print(io, " with eltype ", eltype(v))
 end
